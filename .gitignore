@@ -1,0 +1,10 @@
+/target
+/.settings
+/.project
+/.classpath
+/.springBeans
+
+*.class
+*.jar
+*.war
+*.ear
