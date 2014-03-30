@@ -16,3 +16,7 @@ kvstore-1.0
     --lib (code in jars)
     README.md
 ```
+
+## execute ##
+
+go to bin folder and run run.sh
