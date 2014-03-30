@@ -1,0 +1,1 @@
+java -jar ../lib/kvstore-1.0.jar
