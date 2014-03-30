@@ -16,6 +16,7 @@
     <spring.version>4.0.2.RELEASE</spring.version>
     <log4j.version>1.2.17</log4j.version>
     <junit.version>4.11</junit.version>
+    <daemon.version>1.0.15</daemon.version>
   </properties>
 
   <dependencies>
@@ -64,10 +65,59 @@
       <version>${spring.version}</version>
     </dependency>
 
+    <!-- apache daemon -->
+    <dependency>
+      <groupId>commons-daemon</groupId>
+      <artifactId>commons-daemon</artifactId>
+      <version>${daemon.version}</version>
+    </dependency>
+
   </dependencies>
+
+  <!-- Custom repositories -->
+  <repositories>
+    <repository>
+      <id>nexus</id>
+      <name>local private nexus</name>
+      <url>http://maven.oschina.net/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <!-- end of Custom repositories -->
+
+  <!-- plugin repositories -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>nexus</id>
+      <name>local private nexus</name>
+      <url>http://maven.oschina.net/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  <!-- end of plugin repositories -->
 
   <build>
     <plugins>
+      <plugin>
+        <!-- Compiler Plugin to set JDK Compiler Configuration -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -87,7 +137,7 @@
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>    
-            <descriptor>src/main/assembly/config.xml</descriptor>    
+            <descriptor>src/main/assembly/package.xml</descriptor>    
           </descriptors>
         </configuration>
         <executions>

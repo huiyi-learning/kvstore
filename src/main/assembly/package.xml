@@ -14,6 +14,7 @@
   <fileSets>
     <fileSet>
       <outputDirectory>/</outputDirectory>
+      <fileMode>0744</fileMode>
       <includes>
         <include>README.md</include>
       </includes>
@@ -21,10 +22,12 @@
     <fileSet>
       <directory>src/main/scripts</directory>
       <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/resources</directory>
       <outputDirectory>/conf</outputDirectory>
+      <fileMode>0744</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/logs</directory>
