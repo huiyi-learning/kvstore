@@ -5,13 +5,6 @@
  */
 package cn.edu.sjtu.se.kvstore.db;
 
-import java.io.IOException;
-import java.io.FileInputStream;
-
-import java.util.Properties;
-
-import org.apache.log4j.PropertyConfigurator;
-
 public class KVstore {
 
   public KVstore() {
@@ -26,6 +19,6 @@ public class KVstore {
   }
 
   public void put(Integer key, String value) {
-    
+
   }
 }

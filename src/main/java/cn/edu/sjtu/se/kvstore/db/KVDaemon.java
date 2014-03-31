@@ -60,7 +60,7 @@ public class KVDaemon implements Daemon {
     logger.debug("Daemon startup.");
 
     // setup environment
-    envInit();
+    // envInit();
 
     try {
       listener = new ServerSocket(SOCKET_PORT);
@@ -121,6 +121,7 @@ public class KVDaemon implements Daemon {
   /**
    * environment setup
    */
+  /*
   private void envInit() {
     initLog4j();
     initSpring();
@@ -146,4 +147,5 @@ public class KVDaemon implements Daemon {
   private void initSpring() {
 
   }
+  */
 }
