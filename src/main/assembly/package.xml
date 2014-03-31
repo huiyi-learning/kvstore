@@ -9,11 +9,13 @@
     <dependencySet>
       <useProjectArtifact>true</useProjectArtifact>
       <outputDirectory>lib</outputDirectory>
+      <directoryMode>0755</directoryMode>
     </dependencySet>
   </dependencySets>
   <fileSets>
     <fileSet>
       <outputDirectory>/</outputDirectory>
+      <directoryMode>755</directoryMode>
       <fileMode>0744</fileMode>
       <includes>
         <include>README.md</include>
@@ -22,16 +24,19 @@
     <fileSet>
       <directory>src/main/scripts</directory>
       <outputDirectory>/bin</outputDirectory>
+      <directoryMode>755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/resources</directory>
       <outputDirectory>/conf</outputDirectory>
+      <directoryMode>755</directoryMode>
       <fileMode>0744</fileMode>
     </fileSet>
     <fileSet>
       <directory>src/main/logs</directory>
       <outputDirectory>/logs</outputDirectory>
+      <directoryMode>755</directoryMode>
     </fileSet>
   </fileSets>  
 </assembly>

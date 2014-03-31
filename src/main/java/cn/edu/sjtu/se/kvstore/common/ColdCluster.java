@@ -4,6 +4,8 @@
  */
 package cn.edu.sjtu.se.kvstore.common;
 
+import java.util.Hashtable;
+
 /**
  * data structure used to store cold data.
  */
