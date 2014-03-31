@@ -14,7 +14,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- version of jars -->
     <spring.version>4.0.2.RELEASE</spring.version>
-    <log4j.version>1.2.17</log4j.version>
+    <slf4j.version>1.6.5</log4j.version>
+    <logback.version>1.0.4</logback.version>
     <junit.version>4.11</junit.version>
     <daemon.version>1.0.15</daemon.version>
   </properties>
@@ -29,9 +30,21 @@
     </dependency>
 
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
     </dependency>
 
     <!-- spring dependency -->
@@ -125,8 +138,13 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
+              <!--
               <mainClass>cn.edu.sjtu.se.kvstore.db.KVstore</mainClass>
+            -->
             </manifest>
+            <manifestEntries>
+              <Class-Path>.</Class-Path>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
