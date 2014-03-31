@@ -11,25 +11,25 @@ import java.util.Hashtable;
  */
 public class ColdCluster {
   
-  private Hashtable<Integer, String> data;
+  private Hashtable<String, String> data;
 
   public void setData() {
     this.data = data;
   }
 
-  public Hashtable<Integer, String> getData() {
+  public Hashtable<String, String> getData() {
     return data;
   }
 
   public ColdCluster() {
-    data = new Hashtable<Integer, String>();
+    data = new Hashtable<String, String>();
   }
 
-  public String get(Integer key) {
+  public String get(String key) {
     return data.get(key);
   }
 
-  public void put(Integer key, String value) {
+  public void put(String key, String value) {
     data.put(key, value);
   }
 
