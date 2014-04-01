@@ -6,6 +6,8 @@
 package cn.edu.sjtu.se.kvstore.utils;
 
 import java.net.Socket;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.PrintWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,9 @@ import cn.edu.sjtu.se.kvstore.db.KVstore;
 public class InputHandler implements Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(InputHandler.class);
+  
+  private static PrintWriter accessCount = null;
+  File file = new File("/home/hadoop/access");
 
   private Socket socket;
   private DataInputStream in;
@@ -34,6 +40,15 @@ public class InputHandler implements Runnable {
   public InputHandler(Socket socket, final KVstore store) {
     this.socket = socket;
     this.store = store;
+    
+    
+    try {
+		accessCount = new PrintWriter(file);
+		System.out.println("accessCount");
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	} 
+    
   }
 
   // pass outputstream to KVStore
@@ -57,11 +72,16 @@ public class InputHandler implements Runnable {
           String key = params[1];
           String value = store.get(key);
           out.writeUTF(value + "\r\n");
+          
+          long currentj = System.currentTimeMillis()/60000;
+          accessCount.write(System.currentTimeMillis()+" "+key + "\n");    
+          accessCount.flush();
+          
         } else if (params[0].equals("put")) {
           String key = params[1];
           String value = params[2];
           store.put(key, value);
-          out.writeUTF("success\r\n");
+          out.writeUTF("success\r\n");          
         } else {
           logger.debug("operations not supported with line: " + line);
         }
@@ -76,6 +96,9 @@ public class InputHandler implements Runnable {
       if (in != null) {
         try {
           in.close();
+          
+          accessCount.close();
+          
         } catch (IOException ioein) {
           in = null;
           logger.debug("server couldn't close BufferedReader: " + ioein.getMessage());

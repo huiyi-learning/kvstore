@@ -23,6 +23,24 @@
     </encoder>
   </appender>
   
+  <!-- 文件日志：输出全部日志到文件 -->  
+    <appender name="accessFile" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
+    	<file>${distribution.dir}/logs/access.log</file>
+    	<append>true</append> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <fileNamePattern>${distribution.dir}/logs/kvstore-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>  
+            <maxHistory>100</maxHistory>  
+            <timeBasedFileNamingAndTriggeringPolicy
+          class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>   
+      </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>  
+        <encoder>  
+            <pattern>%d </pattern>  
+        </encoder>  
+    </appender> 
+  
+  
   <root level="DEBUG">
     <appender-ref ref="stdout"/>
     <appender-ref ref="normalFile"/>
