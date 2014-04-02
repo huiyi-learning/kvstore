@@ -1,0 +1,2 @@
+14:00:14.021 [main] DEBUG cn.edu.sjtu.se.kvstore.db.KVDaemon - Daemon init.
+14:00:14.023 [main] DEBUG cn.edu.sjtu.se.kvstore.db.KVDaemon - Daemon startup.

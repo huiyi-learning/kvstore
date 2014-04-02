@@ -8,6 +8,7 @@ package cn.edu.sjtu.se.kvstore.utils;
 import java.net.Socket;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,8 +27,8 @@ public class InputHandler implements Runnable {
 
   private static final Logger logger = LoggerFactory.getLogger(InputHandler.class);
   
-  private static PrintWriter accessCount = null;
-  File file = new File("/home/hadoop/access");
+  private FileWriter accessCount = null;
+  private File file = null;
 
   private Socket socket;
   private DataInputStream in;
@@ -40,12 +41,14 @@ public class InputHandler implements Runnable {
   public InputHandler(Socket socket, final KVstore store) {
     this.socket = socket;
     this.store = store;
-    
+   
     
     try {
-		accessCount = new PrintWriter(file);
-		System.out.println("accessCount");
+    	file = new File("/home/hadoop/access");
+		accessCount = new FileWriter(file,true);
 	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	} catch (IOException e) {
 		e.printStackTrace();
 	} 
     
@@ -73,9 +76,11 @@ public class InputHandler implements Runnable {
           String value = store.get(key);
           out.writeUTF(value + "\r\n");
           
-          long currentj = System.currentTimeMillis()/60000;
-          accessCount.write(System.currentTimeMillis()+" "+key + "\n");    
+          long current = System.currentTimeMillis()/1000;
+          accessCount.write(current + " " + key + "\n");    
           accessCount.flush();
+         // AccessRecord.record(current + " " + key);
+          logger.info(current + " " + key);
           
         } else if (params[0].equals("put")) {
           String key = params[1];
