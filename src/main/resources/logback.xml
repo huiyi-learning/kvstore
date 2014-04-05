@@ -1,59 +1,86 @@
 <?xml version="1.0"?>
 <configuration debug="false" scan="true" scanPeriod="5 minutes">
-  
-  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
-    </encoder>
-  </appender>
-  
-  <appender name="normalFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${distribution.dir}/logs/kvstore.log</file>
-    <append>true</append>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${distribution.dir}/logs/kvstore-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-      <maxHistory>100</maxHistory>
-      <timeBasedFileNamingAndTriggeringPolicy
-          class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <maxFileSize>10MB</maxFileSize>   
-      </timeBasedFileNamingAndTriggeringPolicy>   
-    </rollingPolicy>
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">  
-       <level>DEBUG</level>  
-       <onMatch>ACCEPT</onMatch>  
-       <onMismatch>DENY</onMismatch>
-    </filter> 
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
-    </encoder>
-  </appender>
-  
-  <!-- 文件日志：输出数据访问日志到文件 -->  
-    <appender name="monitor" class="ch.qos.logback.core.rolling.RollingFileAppender"> 
-    	<file>${distribution.dir}/logs/access.log</file>
-    	<append>true</append>  
-        <encoder>  
-            <!-- <pattern>%msg%n</pattern>   -->
-            <pattern>%msg%n</pattern>
-        </encoder>  
-         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">  
-            <level>INFO</level>  
-             <onMatch>ACCEPT</onMatch>  
-             <onMismatch>DENY</onMismatch>
-        </filter>  
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-            <fileNamePattern>${distribution.dir}/logs/kvstore-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>  
-        </rollingPolicy>  
-    </appender> 
-  
-  
-  <root level="DEBUG">
-    <appender-ref ref="stdout" />
-    <appender-ref ref="normalFile" />
-  </root>
-  
-  <logger name="cn.edu.sjtu.se.kvstore.utils.InputHandler" additivity="false" level="INFO">  
-  	<appender-ref ref="monitor" />
-  </logger>
-  
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="normalFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${distribution.dir}/logs/kvstore.log</file>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${distribution.dir}/logs/kvstore-%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+			<maxHistory>100</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter"> <level>DEBUG</level> 
+			<onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter> -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 文件日志：输出数据访问日志到文件 -->	
+	<timestamp key="byMins" datePattern="yyyy-MM-dd-hh-mm"/>	
+	<appender name="monitor"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${distribution.dir}/logs/accessing/access.log</file>
+		<append>true</append>
+		<encoder>
+			<!-- <pattern>%msg%n</pattern> -->
+			<pattern>%msg%n</pattern>
+		</encoder>
+		<!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter"> <level>INFO</level> 
+			<onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${distribution.dir}/logs/accessed/access-%d{yyyy-MM-dd-hh-mm}.log
+			</fileNamePattern>
+			<maxHistory>60</maxHistory>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+		</rollingPolicy>
+	</appender>
+
+	<!-- 文件日志：输出测试数据到文件 -->
+	<appender name="test"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${distribution.dir}/logs/test.log</file>
+		<!-- <file>test.log</file> -->
+		<append>true</append>
+		<encoder>
+			<!-- <pattern>%msg%n</pattern> -->
+			<pattern>%msg%n</pattern>
+		</encoder>
+		<!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter"> <level>INFO</level> 
+			<onMatch>ACCEPT</onMatch> <onMismatch>DENY</onMismatch> </filter> -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${distribution.dir}/logs/kvstore-%d{yyyy-MM-dd}.%i.log.gz
+			</fileNamePattern>
+		</rollingPolicy>
+	</appender>
+
+
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="normalFile" />
+	</root>
+
+	<logger name="cn.edu.sjtu.se.kvstore.utils.InputHandler"
+		additivity="false" level="INFO">
+		<appender-ref ref="monitor" />
+	</logger>
+
+	<logger name="cn.edu.sjtu.se.kvstore.identify.Identifying"
+		additivity="false" level="INFO">
+		<appender-ref ref="test" />
+	</logger>
+
 </configuration>
