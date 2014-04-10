@@ -8,4 +8,6 @@
 *.jar
 *.war
 *.ear
-/target
+
+.DS_Store
+bin/

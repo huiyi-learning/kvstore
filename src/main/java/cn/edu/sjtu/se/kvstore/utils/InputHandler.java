@@ -72,8 +72,8 @@ public class InputHandler implements Runnable {
         } else if (params[0].equals("put")) {
           String key = params[1];
           String value = params[2];
-          store.put(key, value);
-          out.writeUTF("success\r\n");          
+          String ret = store.put(key, value);
+          out.writeUTF(ret + "\r\n");
         } else {
           logger.debug("operations not supported with line: " + line);
         }

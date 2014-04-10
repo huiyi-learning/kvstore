@@ -1,27 +1,67 @@
+/**
+ * @author Francis
+ * @version 0.0.1
+ */
 package cn.edu.sjtu.se.kvstore.common;
 
-import java.util.Hashtable;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class Data {
-	private Hashtable<String, String> data;
+public class Data<K, V> {
 
-	  public void setData() {
-	    this.data = data;
-	  }
+  private ConcurrentHashMap<K, V> hot;
+  private Set<K> cold;
 
-	  public Hashtable<String, String> getData() {
-	    return data;
-	  }
+  public Data() {
+    hot = new ConcurrentHashMap<K, V>();
+    cold = Collections.synchronizedSet(new HashSet<K>());
+  }
 
-	  public Data() {
-	    data = new Hashtable<String, String>();
-	  }
+  public V get(K key) {
+    if (hot.containsKey(key)) {
+      return hot.get(key);
+    } else {
+      if (cold.contains(key)) {
+        // uncompress and return
+      } else {
+        // return empty value
+        return null;
+      }
+    }
 
-	  public String get(String key) {
-	    return data.get(key);
-	  }
+    return null;
+  }
 
-	  public void put(String key, String value) {
-	    data.put(key, value);
-	  }
+  /**
+   * @return
+   * the previous value associated with key, or null if there was no mapping for key
+   */
+  public V put(K key, V value) {
+    return hot.put(key, value);
+  }
+
+  public boolean containsKey(K key) {
+    return hot.containsKey(key) || cold.contains(key);
+  }
+
+  public V remove(K key) {
+    if (hot.containsKey(key)) {
+      return hot.remove(key);
+    } else {
+      // delete compressed data associated with key
+    }
+
+    return null;
+  }
+
+  public void clear() {
+    hot.clear();
+    cold.clear();
+  }
+
+  public int size() {
+    return hot.size() + cold.size();
+  }
 }
