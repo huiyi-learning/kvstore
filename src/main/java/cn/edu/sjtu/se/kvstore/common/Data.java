@@ -4,6 +4,8 @@
  */
 package cn.edu.sjtu.se.kvstore.common;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collections;
@@ -12,7 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Data<K, V> {
 
   private ConcurrentHashMap<K, V> hot;
+
+  public ConcurrentHashMap<K, V> getHot() {
+    return hot;
+  }
+
   private Set<K> cold;
+
+  public Set<K> getCold() {
+    return cold;
+  }
 
   public Data() {
     hot = new ConcurrentHashMap<K, V>();
@@ -63,5 +74,13 @@ public class Data<K, V> {
 
   public int size() {
     return hot.size() + cold.size();
+  }
+
+  public void moveHot2Cold(List<String> keys) {
+
+  }
+
+  public void moveCold2Hot(Map<String, String> items) {
+    
   }
 }
