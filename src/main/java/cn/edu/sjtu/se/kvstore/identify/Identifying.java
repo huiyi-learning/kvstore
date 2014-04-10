@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.edu.sjtu.se.kvstore.common.ColdCluster;
 import cn.edu.sjtu.se.kvstore.common.HotCluster;
+import cn.edu.sjtu.se.kvstore.db.KVstore;
 
 public class Identifying extends TimerTask {
 
@@ -41,10 +43,15 @@ public class Identifying extends TimerTask {
 	private final int K = 30;
 	private static long startTime = System.currentTimeMillis() / 1000;;
 	private static final HashSet<String> scannedFiles = new HashSet<String>();
+	
+	private KVstore store = null;
 
+	public Identifying(KVstore store){
+		this.store = store;
+	}
+	
 	public void run() {
-		File accessDir = new File(
-				"/home/hadoop/kvstore/target/kvstore-1.0/logs/accessed");
+		File accessDir = new File(System.getProperty("distribution.dir")+"/logs/accessed");
 		File[] accessFiles = accessDir.listFiles();
 		try {
 			if (accessFiles != null)
@@ -89,22 +96,23 @@ public class Identifying extends TimerTask {
 
 			});
 
+			ArrayList<String> hotKeys = new ArrayList<String>();
 			for (int j = 0; j < K && j < keys.length; j++) {
 				// System.out.println(keys[j] + " " +
 				// estimates.get(keys[j]).getFrequence());
-				HotCluster.add((String) keys[j]);
-				/*
-				 * logger.info(keys[j] + " " +
-				 * estimates.get(keys[j]).getFrequence());
-				 */
+//				HotCluster.add((String) keys[j]);
+				hotKeys.add((String)keys[j]);
 			}
 
+			ArrayList<String> coldKeys = new ArrayList<String>();
 			for (int j = K; j < keys.length; j++) {
-				ColdCluster.add((String) keys[j]);
+				//ColdCluster.add((String) keys[j]);
 				/*
 				 * logger.info(keys[j] + " " +
 				 * estimates.get(keys[j]).getFrequence());
 				 */
+				coldKeys.add((String)keys[j]);
+				
 			}
 
 			displayDataCluster();

@@ -24,10 +24,15 @@ public class KVstore {
   }
 
   public String get(String key) {
+	    
+    long current = System.currentTimeMillis()/1000;
+    logger.info(current + " " + key);
+	  
     return data.get(key);
   }
 
   public String put(String key, String value) {
     return data.put(key, value);
   }
+  
 }

@@ -25,7 +25,7 @@ public class Main {
 
 		}
 		// timer.schedule(new MyTask(), 1000, 3000);
-		timer.schedule(new Identifying(), 1000, 3000);
+//		timer.schedule(new Identifying(), 1000, 3000);
 
 		/*
 		 * File accessDir = new File(

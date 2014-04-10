@@ -66,9 +66,6 @@ public class InputHandler implements Runnable {
           String value = store.get(key);
           out.writeUTF(value + "\r\n");
           
-          long current = System.currentTimeMillis()/1000;
-          logger.info(current + " " + key);
-          
         } else if (params[0].equals("put")) {
           String key = params[1];
           String value = params[2];
