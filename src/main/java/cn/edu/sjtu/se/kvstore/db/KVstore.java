@@ -8,8 +8,7 @@ package cn.edu.sjtu.se.kvstore.db;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.edu.sjtu.se.kvstore.common.HotCluster;
-import cn.edu.sjtu.se.kvstore.common.ColdCluster;
+import cn.edu.sjtu.se.kvstore.common.Data;
 
 public class KVstore {
 

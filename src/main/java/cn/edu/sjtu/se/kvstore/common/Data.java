@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.kvstore.db;
+package cn.edu.sjtu.se.kvstore.common;
 
 import java.util.Hashtable;
 
