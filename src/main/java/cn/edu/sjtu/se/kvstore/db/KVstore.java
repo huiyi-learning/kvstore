@@ -36,8 +36,8 @@ public class KVstore {
     return data.get(key);
   }
 
-  public String put(String key, String value) {
-    return data.put(key, value);
+  public void put(String key, String value) {
+    data.put(key, value);
   }
   
   public void moveHot2Cold(List<String> keys) {
@@ -54,5 +54,9 @@ public class KVstore {
 
   public Set<String> getCold() {
     return data.getCold();
+  }
+
+  public Set<String> getRm() {
+    return data.getRm();
   }
 }

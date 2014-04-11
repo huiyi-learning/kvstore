@@ -60,8 +60,8 @@ public class InputHandler implements Runnable {
         } else if (params[0].equals("put")) {
           String key = params[1];
           String value = params[2];
-          String ret = store.put(key, value);
-          out.writeUTF(ret + "\r\n");
+          store.put(key, value);
+          out.writeUTF("success\r\n");
         } else {
           logger.debug("operations not supported with line: " + line);
         }
@@ -102,78 +102,5 @@ public class InputHandler implements Runnable {
         }  
       }
     }
-
-
-
-
-    /*
-    try {
-
-      // Read data from client
-      in = new BufferedReader(
-        new InputStreamReader(socket.getInputStream()));
-
-      out = new BufferedWriter(
-          new OutputStreamWriter(socket.getOutputStream()));
-
-      while (true) {
-        String line = in.readLine();
-        if (line == null) {
-          break;
-        }
-
-        // process client data & respond to client
-        String[] params = line.split(" ");
-        if (params[0].equals("get")) {
-          String key = params[1];
-          String value = store.get(key);
-          out.write(value);
-          out.newLine();
-          out.flush();
-        } else if (params[0].equals("put")) {
-          String key = params[1];
-          String value = params[2];
-          store.put(key, value);
-        } else {
-          logger.debug("operations not supported with line: " + line);
-        }
-      }
-
-      in.close();
-      out.close();
-    } catch (Exception ex) {
-      logger.debug("server running error: " + ex.getMessage());
-    } finally {
-      // close BufferedReader
-      if (in != null) {
-        try {
-          in.close();
-        } catch (IOException ioein) {
-          in = null;
-          logger.debug("server couldn't close BufferedReader: " + ioein.getMessage());
-        }
-      }
-
-      // close BufferedWriter
-      if (out != null) {
-        try {
-          out.close();
-        } catch (Exception ioeout) {
-          out = null;
-          logger.debug("server couldn't close BufferedWriter: " + ioeout.getMessage());
-        }
-      }
-
-      // close socket
-      if (socket != null) {  
-        try {  
-          socket.close();  
-        } catch (Exception e) {  
-          socket = null;  
-          logger.debug("server couldn't close socket:" + e.getMessage());  
-        }  
-      }
-    }
-    */
   }
 }
