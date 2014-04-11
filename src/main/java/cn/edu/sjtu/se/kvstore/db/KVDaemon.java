@@ -5,17 +5,13 @@
  */
 package cn.edu.sjtu.se.kvstore.db;
 
-import java.net.Socket;
 import java.net.ServerSocket;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.Properties;
 
 import java.io.IOException;
-import java.io.FileInputStream;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;

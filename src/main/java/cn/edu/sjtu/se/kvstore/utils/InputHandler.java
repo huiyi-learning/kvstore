@@ -7,10 +7,6 @@ package cn.edu.sjtu.se.kvstore.utils;
 
 import java.net.Socket;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
