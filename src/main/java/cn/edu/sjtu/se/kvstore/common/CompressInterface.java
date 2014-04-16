@@ -5,15 +5,20 @@
 package cn.edu.sjtu.se.kvstore.common;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.lang.model.element.VariableElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.*;
+import com.google.common.collect.Lists;
 
 public class CompressInterface<K,V> {
 	
@@ -56,13 +61,14 @@ public class CompressInterface<K,V> {
 	
 	//transfer hot data to cold, namely decompress data
 	//coldKeys表示已经变成hot data的cold data的key，将对应的values解压出来，返回对应的K/V
+	//@SuppressWarnings("unchecked")
 	public Map<K,V> convertColdToHot(Set<K> coldKeys) {
 		Map<K, V> rec = new HashMap<K, V>();
 		try {
 			for (K key : coldKeys) {
 				for(String sp : compressdata.keySet()) {
 					if(sp.contains(key.toString())) {
-						//rec.put(, );
+						rec.put(key, (V)sp.split("-")[Arrays.asList(sp.split(",")).indexOf(key)]);
 						break;
 					}
 				}
@@ -76,6 +82,19 @@ public class CompressInterface<K,V> {
 	}
 	
 	private void removeData(String key) {
-		
+		try {
+			for(String sp : compressdata.keySet()) {
+				if(sp.contains(key.toString())) {
+					String valueString = ZipUtil.decompress(compressdata.get(sp));
+					List<String> items = Lists.newArrayList(Splitter.on(",").split(valueString));
+					items.remove(Arrays.asList(sp.split(",")).indexOf(key));
+					String val = Joiner.on("|").join(items);
+					compressdata.put(sp, ZipUtil.compress(val));
+					break;
+				}
+			}	
+		} catch (IOException e) {
+			logger.debug("Compressinterface removeData error: " + e.toString());
+		}
 	}
 }
