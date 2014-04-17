@@ -18,8 +18,7 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.edu.sjtu.se.kvstore.common.ColdCluster;
-import cn.edu.sjtu.se.kvstore.common.HotCluster;
+import cn.edu.sjtu.se.kvstore.common.CompressInterface;
 import cn.edu.sjtu.se.kvstore.db.KVstore;
 
 public class Identifying extends TimerTask {
@@ -51,8 +50,12 @@ public class Identifying extends TimerTask {
 	}
 	
 	public void run() {
-		File accessDir = new File(System.getProperty("distribution.dir")+"/logs/accessed");
+		//File accessDir = new File(System.getProperty("distribution.dir")+"/logs/accessed");
+		logger.info("start to run");
+		File accessDir = new File("/home/hadoop/kvstore/target/kvstore-1.0/logs/accessed");
 		File[] accessFiles = accessDir.listFiles();
+		if(accessFiles != null)
+			logger.info(String.valueOf(accessFiles.length));
 		try {
 			if (accessFiles != null)
 				for (int i = 0; i < accessFiles.length; i++)
@@ -95,39 +98,84 @@ public class Identifying extends TimerTask {
 				}
 
 			});
+			
+			logger.info("keys.length = " + keys.length);
+			
+			//现在的hot data map
+			Map<String,String> hotMap = store.getHot();		
+			logger.info("hotMap size = " + hotMap.size());
+			//现在的cold data set
+			Set<String> coldSet = store.getCold();
+			logger.info("coldSet size = " + coldSet.size());
 
-			ArrayList<String> hotKeys = new ArrayList<String>();
+			//变成hot data的cold data的key，需要从cold data中解压
+			Set<String> hotInColdSet = new HashSet<String>();
+			
+			//需要压缩的cold data，该cold data现在在hot data中
+			Map<String,String> toCompressColdMap = new HashMap<String,String>();
+			
+			//需要删除的cold data
+			Set<String> toDeleteColdKeys = store.getRm();			
+			
+			
 			for (int j = 0; j < K && j < keys.length; j++) {
 				// System.out.println(keys[j] + " " +
 				// estimates.get(keys[j]).getFrequence());
 //				HotCluster.add((String) keys[j]);
-				hotKeys.add((String)keys[j]);
+				String hotKey = (String)keys[j];
+				if(coldSet.contains(hotKey))
+					hotInColdSet.add(hotKey);
 			}
 
-			ArrayList<String> coldKeys = new ArrayList<String>();
 			for (int j = K; j < keys.length; j++) {
 				//ColdCluster.add((String) keys[j]);
 				/*
 				 * logger.info(keys[j] + " " +
 				 * estimates.get(keys[j]).getFrequence());
 				 */
-				coldKeys.add((String)keys[j]);
-				
+				String coldKey = (String)keys[j];
+				if(hotMap.containsKey(coldKey))
+					toCompressColdMap.put(coldKey,hotMap.get(coldKey));					
 			}
 
-			displayDataCluster();
-
-			HotCluster.clear();
-			ColdCluster.clear();
+			//displayDataCluster();
+			logger.info("hotInColdSet size = " + hotInColdSet.size());
+			logger.info("toCompressColdMap size = " + toCompressColdMap.size());
+			logger.info("toDeleteColdKeys size = " + toDeleteColdKeys.size());
+			
+			CompressInterface<String,String> ci = new CompressInterface<String,String>();
+			
+			//delete
+			ci.delete(toDeleteColdKeys);
+			
+			//decompress
+			Map<String,String> compressedHotData = ci.convertColdToHot(hotInColdSet);
+			store.moveCold2Hot(compressedHotData);
+			
+			//compress
+			Iterator<String> it = toCompressColdMap.keySet().iterator();
+			long memSize = 0;
+			while(it.hasNext()){
+				String key = it.next();
+				String value = toCompressColdMap.get(key);
+				memSize += key.length() + value.length();
+			}
+			logger.info("before compress: " + memSize);
+			ci.convertHotToCold(toCompressColdMap);
+			store.moveHot2Cold(toCompressColdMap.keySet());
+			logger.info("after compress: " + ci.getMemSize());
+			
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			logger.info("file not found!");
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.info("access file error!");
 		}
 	}
 
-	public void displayDataCluster() {
+/*	public void displayDataCluster() {
 		logger.info("======================");
 		logger.info("host data:");
 
@@ -150,5 +198,5 @@ public class Identifying extends TimerTask {
 
 		logger.info("======================");
 	}
-
+*/
 }

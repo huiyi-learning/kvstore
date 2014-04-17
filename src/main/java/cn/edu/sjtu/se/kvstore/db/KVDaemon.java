@@ -77,7 +77,7 @@ public class KVDaemon implements Daemon {
 		//start to identifying data after 10mins;
 		long delay = 1000*60;
 		//identify data every 10mins;
-		long period = 1000*60*2;
+		long period = 1000*30;
 		timer.schedule(new Identifying(store),delay,period);
 
 		try {

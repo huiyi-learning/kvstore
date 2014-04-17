@@ -73,7 +73,7 @@
 		<appender-ref ref="normalFile" />
 	</root>
 
-	<logger name="cn.edu.sjtu.se.kvstore.utils.InputHandler"
+	<logger name="cn.edu.sjtu.se.kvstore.db.KVstore"
 		additivity="false" level="INFO">
 		<appender-ref ref="monitor" />
 	</logger>

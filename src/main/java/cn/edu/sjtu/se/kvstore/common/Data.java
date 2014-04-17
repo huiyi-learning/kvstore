@@ -4,6 +4,7 @@
  */
 package cn.edu.sjtu.se.kvstore.common;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,11 +83,24 @@ public class Data<K, V> {
     return hot.size() + cold.size() - rm.size();
   }
 
-  public void moveHot2Cold(List<String> keys) {
-
+  public void moveHot2Cold(Set<K> keys) {
+	  Iterator<K> it = keys.iterator();
+	  while (it.hasNext()) {
+		  K key = it.next();
+		  cold.add(key);
+		  if (hot.containsKey(key)) {
+			  hot.remove(key);
+		  }
+	  }
   }
 
-  public void moveCold2Hot(Map<String, String> items) {
-    
+  public void moveCold2Hot(Map<K, V> items) {
+	  hot.putAll(items);
+	  Set<K> keys = items.keySet();
+	  Iterator<K> it = keys.iterator();
+	  while (it.hasNext()) {
+		  K key = it.next();
+		  cold.remove(key);
+	  }
   }
 }

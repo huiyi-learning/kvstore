@@ -40,7 +40,7 @@ public class KVstore {
     data.put(key, value);
   }
   
-  public void moveHot2Cold(List<String> keys) {
+  public void moveHot2Cold(Set<String> keys) {
     data.moveHot2Cold(keys);
   }
 

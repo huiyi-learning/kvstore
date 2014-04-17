@@ -30,6 +30,18 @@ public class CompressInterface<K,V> {
 		compressdata = new HashMap<String, String>();
 	}
 	
+	public long getMemSize(){
+		
+		Iterator<String> it = compressdata.keySet().iterator();
+		long memSize = 0;
+		while(it.hasNext()){
+			String key = it.next();
+			String value = compressdata.get(key);
+			memSize += key.length() + value.length();
+		}
+		return memSize;
+	}
+	
 	//delete cold data 
 	//根据传入的coldKeys，将对应的压缩cold data的values删除
 	public boolean delete(Set<K> coldKeys) {
