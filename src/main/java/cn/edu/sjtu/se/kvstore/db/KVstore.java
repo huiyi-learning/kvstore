@@ -5,6 +5,11 @@
  */
 package cn.edu.sjtu.se.kvstore.db;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +36,28 @@ public class KVstore {
     return data.get(key);
   }
 
-  public String put(String key, String value) {
-    return data.put(key, value);
+  public void put(String key, String value) {
+    data.put(key, value);
+  }
+  
+  public void moveHot2Cold(List<String> keys) {
+    data.moveHot2Cold(keys);
+  }
+
+  public void moveCold2Hot(Map<String, String> items) {
+    data.moveCold2Hot(items);
+  }
+
+  public ConcurrentHashMap<String, String> getHot() {
+    return data.getHot();
+  }
+
+  public Set<String> getCold() {
+    return data.getCold();
+  }
+
+  public Set<String> getRm() {
+    return data.getRm();
   }
   
 }
