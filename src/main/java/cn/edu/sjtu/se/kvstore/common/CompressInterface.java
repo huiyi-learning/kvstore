@@ -71,6 +71,19 @@ public class CompressInterface<K,V> {
 		return true;
 	}
 	
+	//use to test
+	public long testConvertHotToCold(Map<K,V> hotDatas) {
+		String key = Joiner.on("|").join(hotDatas.keySet());
+		String value = null;
+		try {
+			value = ZipUtil.compress(Joiner.on("|").join(hotDatas.values()));
+		} catch (IOException e) {
+			logger.debug("Compressinterface convertHotToCold error: " + e.toString());
+		}
+		compressdata.put(key, value);
+		return value.length();
+	}
+
 	//transfer hot data to cold, namely decompress data
 	//coldKeys表示已经变成hot data的cold data的key，将对应的values解压出来，返回对应的K/V
 	//@SuppressWarnings("unchecked")

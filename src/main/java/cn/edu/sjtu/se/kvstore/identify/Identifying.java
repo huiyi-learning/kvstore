@@ -50,12 +50,12 @@ public class Identifying extends TimerTask {
 	}
 	
 	public void run() {
-		//File accessDir = new File(System.getProperty("distribution.dir")+"/logs/accessed");
+		File accessDir = new File(System.getProperty("distribution.dir")+"/logs/accessed");
 		logger.info("start to run");
-		File accessDir = new File("/home/hadoop/kvstore/target/kvstore-1.0/logs/accessed");
+		//File accessDir = new File("/home/hadoop/kvstore/target/kvstore-1.0/logs/accessed");
 		File[] accessFiles = accessDir.listFiles();
-		if(accessFiles != null)
-			logger.info(String.valueOf(accessFiles.length));
+		//if(accessFiles != null)
+		//	logger.info(String.valueOf(accessFiles.length));
 		try {
 			if (accessFiles != null)
 				for (int i = 0; i < accessFiles.length; i++)
@@ -99,14 +99,14 @@ public class Identifying extends TimerTask {
 
 			});
 			
-			logger.info("keys.length = " + keys.length);
+			//logger.info("keys.length = " + keys.length);
 			
 			//现在的hot data map
 			Map<String,String> hotMap = store.getHot();		
-			logger.info("hotMap size = " + hotMap.size());
+			//logger.info("hotMap size = " + hotMap.size());
 			//现在的cold data set
 			Set<String> coldSet = store.getCold();
-			logger.info("coldSet size = " + coldSet.size());
+			//logger.info("coldSet size = " + coldSet.size());
 
 			//变成hot data的cold data的key，需要从cold data中解压
 			Set<String> hotInColdSet = new HashSet<String>();
@@ -139,31 +139,48 @@ public class Identifying extends TimerTask {
 			}
 
 			//displayDataCluster();
-			logger.info("hotInColdSet size = " + hotInColdSet.size());
+			/*logger.info("hotInColdSet size = " + hotInColdSet.size());
 			logger.info("toCompressColdMap size = " + toCompressColdMap.size());
-			logger.info("toDeleteColdKeys size = " + toDeleteColdKeys.size());
+			logger.info("toDeleteColdKeys size = " + toDeleteColdKeys.size());*/
 			
 			CompressInterface<String,String> ci = new CompressInterface<String,String>();
 			
 			//delete
 			ci.delete(toDeleteColdKeys);
+			store.clearRm();
+			
+			//logger.info("finish delete");
 			
 			//decompress
 			Map<String,String> compressedHotData = ci.convertColdToHot(hotInColdSet);
-			store.moveCold2Hot(compressedHotData);
+			
+			//logger.info("finish convertColdToHot");
 			
 			//compress
 			Iterator<String> it = toCompressColdMap.keySet().iterator();
-			long memSize = 0;
+			long beforeMemSize = 0;
 			while(it.hasNext()){
 				String key = it.next();
 				String value = toCompressColdMap.get(key);
-				memSize += key.length() + value.length();
+				beforeMemSize += key.length() + value.length();
 			}
-			logger.info("before compress: " + memSize);
-			ci.convertHotToCold(toCompressColdMap);
+
+			if(beforeMemSize != 0)
+			{
+
+				logger.info("before compress: " + beforeMemSize/1024 + "KB");
+				
+				long afterMemSize = ci.testConvertHotToCold(toCompressColdMap);
+				
+				//logger.info("finish convertHotToCold");	
+				logger.info("after compress: " + afterMemSize/1024 + "KB");
+				
+				
+				logger.info("compress rate:  " + (1 - ((double)afterMemSize/beforeMemSize)));
+			}			
+
+			store.moveCold2Hot(compressedHotData);			
 			store.moveHot2Cold(toCompressColdMap.keySet());
-			logger.info("after compress: " + ci.getMemSize());
 			
 
 		} catch (FileNotFoundException e) {

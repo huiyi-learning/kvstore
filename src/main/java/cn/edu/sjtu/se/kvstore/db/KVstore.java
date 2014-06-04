@@ -29,11 +29,15 @@ public class KVstore {
   }
 
   public String get(String key) {
-	    
-    long current = System.currentTimeMillis()/1000;
-    logger.info(current + " " + key);
+	
+	String value = data.get(key);  
+	 
+	if(value != null) {
+	    long current = System.currentTimeMillis()/1000;
+	    logger.info(current + " " + key);
+	}
 	  
-    return data.get(key);
+    return value;
   }
 
   public void put(String key, String value) {
@@ -58,6 +62,10 @@ public class KVstore {
 
   public Set<String> getRm() {
     return data.getRm();
+  }
+  
+  public void clearRm() {
+	  data.clearRm();
   }
   
 }

@@ -42,13 +42,18 @@ public class Data<K, V> {
     } else {
       if (cold.contains(key)) {
         // uncompress and return
+        CompressInterface ci = new CompressInterface();
+        HashSet<K> coldSet = new HashSet<K>();
+        coldSet.add(key);
+        Map<K,V> result = ci.convertColdToHot(coldSet);
+        return result.get(key);
       } else {
         // return empty value
         return null;
       }
     }
 
-    return null;
+    //return null;
   }
 
   /**
@@ -102,5 +107,9 @@ public class Data<K, V> {
 		  K key = it.next();
 		  cold.remove(key);
 	  }
+  }
+  
+  public void clearRm(){
+	  rm.clear();
   }
 }

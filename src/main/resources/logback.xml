@@ -45,6 +45,10 @@
 			<fileNamePattern>${distribution.dir}/logs/accessed/access-%d{yyyy-MM-dd-hh-mm}.log
 			</fileNamePattern>
 			<maxHistory>60</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
 			<cleanHistoryOnStart>true</cleanHistoryOnStart>
 		</rollingPolicy>
 	</appender>
