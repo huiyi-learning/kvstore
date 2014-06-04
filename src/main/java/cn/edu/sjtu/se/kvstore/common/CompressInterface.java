@@ -26,9 +26,11 @@ public class CompressInterface<K,V> {
 	private static final Logger logger = LoggerFactory.getLogger(CompressInterface.class);
 	
 	private static final Map<String, String> compressdata;
+	private static final Map<String, String> key_index;
 	
 	static {
 		compressdata = new ConcurrentHashMap<String, String>();
+		key_index = new ConcurrentHashMap<String, String>();
 	}
 	
 	public long getMemSize(){
@@ -69,6 +71,11 @@ public class CompressInterface<K,V> {
 			logger.debug("Compressinterface convertHotToCold error: " + e.toString());
 		}
 		compressdata.put(key, value);
+		for (K sp : hotDatas.keySet()) {
+			if (!key_index.containsKey(sp)) {
+				key_index.put((String)sp, key);	
+			}
+		}
 		return true;
 	}
 	
@@ -92,16 +99,11 @@ public class CompressInterface<K,V> {
 		Map<K, V> rec = new HashMap<K, V>();
 		try {
 			for (K key : coldKeys) {
-				for(String sp : compressdata.keySet()) {
-					if(sp.contains(key.toString())) {
-						String valueString = ZipUtil.decompress(compressdata.get(sp));
-						List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
-						V value = (V)items.get(Arrays.asList(sp.split("|")).indexOf(key));
-						rec.put(key,value);
-						//rec.put(key, (V)sp.split("-")[Arrays.asList(sp.split(",")).indexOf(key)]);
-						break;
-					}
-				}
+				String sp = key_index.get(key);
+				String valueString = ZipUtil.decompress(compressdata.get(sp));
+				List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
+				V value = (V)items.get(Arrays.asList(sp.split("|")).indexOf(key));
+				rec.put(key,value);
 			}
 		}
 		catch(Exception e) {
@@ -113,16 +115,14 @@ public class CompressInterface<K,V> {
 	
 	private void removeData(String key) {
 		try {
-			for(String sp : compressdata.keySet()) {
-				if(sp.contains(key.toString())) {
-					String valueString = ZipUtil.decompress(compressdata.get(sp));
-					List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
-					items.remove(Arrays.asList(sp.split("|")).indexOf(key));
-					String val = Joiner.on("|").join(items);
-					compressdata.put(sp, ZipUtil.compress(val));
-					break;
-				}
-			}	
+			if (!key_index.containsKey(key)) return;
+			String sp = key_index.get(key);
+			String valueString = ZipUtil.decompress(compressdata.get(sp));
+			List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
+			items.remove(Arrays.asList(sp.split("|")).indexOf(key));
+			String val = Joiner.on("|").join(items);
+			compressdata.put(sp, ZipUtil.compress(val));
+			key_index.remove(key);
 		} catch (IOException e) {
 			logger.debug("Compressinterface removeData error: " + e.toString());
 		}
