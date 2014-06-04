@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.lang.model.element.VariableElement;
 
@@ -27,7 +28,7 @@ public class CompressInterface<K,V> {
 	private static final Map<String, String> compressdata;
 	
 	static {
-		compressdata = new HashMap<String, String>();
+		compressdata = new ConcurrentHashMap<String, String>();
 	}
 	
 	public long getMemSize(){
@@ -93,7 +94,11 @@ public class CompressInterface<K,V> {
 			for (K key : coldKeys) {
 				for(String sp : compressdata.keySet()) {
 					if(sp.contains(key.toString())) {
-						rec.put(key, (V)sp.split("-")[Arrays.asList(sp.split(",")).indexOf(key)]);
+						String valueString = ZipUtil.decompress(compressdata.get(sp));
+						List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
+						V value = (V)items.get(Arrays.asList(sp.split("|")).indexOf(key));
+						rec.put(key,value);
+						//rec.put(key, (V)sp.split("-")[Arrays.asList(sp.split(",")).indexOf(key)]);
 						break;
 					}
 				}
@@ -111,8 +116,8 @@ public class CompressInterface<K,V> {
 			for(String sp : compressdata.keySet()) {
 				if(sp.contains(key.toString())) {
 					String valueString = ZipUtil.decompress(compressdata.get(sp));
-					List<String> items = Lists.newArrayList(Splitter.on(",").split(valueString));
-					items.remove(Arrays.asList(sp.split(",")).indexOf(key));
+					List<String> items = Lists.newArrayList(Splitter.on("|").split(valueString));
+					items.remove(Arrays.asList(sp.split("|")).indexOf(key));
 					String val = Joiner.on("|").join(items);
 					compressdata.put(sp, ZipUtil.compress(val));
 					break;

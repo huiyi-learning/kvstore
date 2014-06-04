@@ -39,7 +39,8 @@ public class Identifying extends TimerTask {
 	 * else return 0; } } });
 	 */
 	private static final double A = 0.01;
-	private final int K = 30;
+	private int K = 30;
+	private double percent = 0.1;
 	private static long startTime = System.currentTimeMillis() / 1000;;
 	private static final HashSet<String> scannedFiles = new HashSet<String>();
 	
@@ -117,7 +118,8 @@ public class Identifying extends TimerTask {
 			//需要删除的cold data
 			Set<String> toDeleteColdKeys = store.getRm();			
 			
-			
+			K = (int)((hotMap.size() + coldSet.size())*percent);
+
 			for (int j = 0; j < K && j < keys.length; j++) {
 				// System.out.println(keys[j] + " " +
 				// estimates.get(keys[j]).getFrequence());

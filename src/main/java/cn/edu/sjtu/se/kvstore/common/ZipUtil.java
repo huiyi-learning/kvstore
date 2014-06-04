@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 public class ZipUtil {
   
     private static String format = "ISO8859-1";
+    //private static String format = "utf-8";
     private static int bytesize = 256;
     
     public static String compress(String str) throws IOException {
